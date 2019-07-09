@@ -1,5 +1,5 @@
 ---
-title: API Reference
+title: Embneusys
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
@@ -7,9 +7,9 @@ language_tabs: # must be one of https://git.io/vQNgJ
   - python
   - javascript
 
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
+# toc_footers:
+#   - <a href='#'>Sign Up for a Developer Key</a>
+#   - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
 
 includes:
   - errors
@@ -19,221 +19,181 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
-
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+This is the Embneusys Rest API for the clients' website. 
 
 # Authentication
 
-> To authorize, use this code:
 
-```ruby
-require 'kittn'
+Users are authenticated using the Firebase API. Each request to the API must be accompanied with the User ID and the authentication Token provided by the Firebase.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+Firebase API may be replaced with custom authentication in the future.
 </aside>
 
-# Kittens
+# Devices
 
-## Get All Kittens
+## Get All Devices
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
 
 > The above command returns JSON structured like this:
 
 ```json
 [
   {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+    "total_devices": 3,
+    "device_uid": [127128, 812712, 1829912],
+    "tool_name": ["jackhammer", "motor 1", "motor 2"] }
+]
+
+OR 
+[
+  {
+    "total_devices": 3,
+    "device_uid": 127128,
+    "tool_name": "jackhammer" 
   },
   {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+    "total_devices": 3,
+    "device_uid":  812712, 
+    "tool_name": "motor 1"
+  },
+  {
+    "total_devices": 3,
+    "device_uid": 1829912,
+    "tool_name":  "motor 2"
   }
 ]
+
+
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves all devices owned by a specific user.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET http://example.com/api/devices`
 
 ### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+Parameter |  Description
+--------- |  -----------
+uid | User id  .
+token | Authentication Token.
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
 
-## Get a Specific Kitten
+## Get History of a Specific Device
 
-```ruby
-require 'kittn'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "value": 12,
+  "dateID" : 14
 }
 ```
 
-This endpoint retrieves a specific kitten.
+This endpoint retrieves the measurements of a specific device.
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET http://example.com/devices/<ID>`
 
 ### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+Parameter | Default |  Description
+--------- | ------- |  -----------
+ID | | The ID of the device to retrieve
+history | 0 | Returns the nth oldest measurement. Zero for the most recent.
 
-## Delete a Specific Kitten
+# Account Management
 
-```ruby
-require 'kittn'
+ 
+##  Login
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
+This endpoint validates the user and returns an authentication token for this session
+### HTTP Request
 
 > The above command returns JSON structured like this:
 
 ```json
-{
-  "id": 2,
-  "deleted" : ":("
+{ 
+    "jwt": "ahsIdsasadHBY8SAasHhjjas",
+    "expires": 120
 }
 ```
 
-This endpoint deletes a specific kitten.
+`POST http://example.com/login/`
 
-### HTTP Request
+### Body Parameters
 
-`DELETE http://example.com/kittens/<ID>`
+Parameter |   Description
+--------- |   -----------
+usernsame |  The username or email of the user
+password  |  The password encrypted
 
-### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
+<aside class="warning"> This endpoint is not currently in use. This is for future reference.</aside>
+
+## Logout
+
+
+This endpoint terminates the session for the user (deletes the auth token from the server)
+
+> The above command returns JSON structured like this:
+
+```json
+{ 
+    "logedOut": true
+}
+```
+
+### HTTP Request 
+`POST http://example.com/login/`
+
+### Body Parameters
+
+Parameter |   Description
+--------- |   -----------
+userId |  The user's ID
+token  |  The authentication token
+
+
+<aside class="warning"> This endpoint is not currently in use. This is for future reference.</aside>
+
+
+## Create Account
+
+
+This endpoint terminates the session for the user (deletes the auth token from the server)
+
+> The above command returns JSON structured like this:
+
+```json
+{ 
+    "logedOut": true
+}
+```
+
+### HTTP Request 
+`POST http://example.com/login/`
+
+### Body Parameters
+
+Parameter |   Description
+--------- |   -----------
+username |  User's name
+password  |  The password
+email | 
+companyName |
+phone1 | 
+phone2 |
+address |
+
+
+
+<aside class="warning"> This endpoint is not currently in use. This is for future reference.</aside>
 
